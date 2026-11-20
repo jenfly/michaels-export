@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Michaels order export – install</title>
+  <style>
+    body { font: 16px/1.55 system-ui, sans-serif; color: #222; max-width: 640px; margin: 40px auto; padding: 0 20px; }
+    h1 { font-size: 26px; margin-bottom: 4px; }
+    .sub { color: #666; margin-top: 0; }
+    h2 { font-size: 18px; margin-top: 32px; }
+    ol { padding-left: 22px; }
+    li { margin: 8px 0; }
+    .bookmarklet { display: inline-block; padding: 10px 18px; border-radius: 8px; background: #c8102e; color: #fff;
+                   font-weight: 600; text-decoration: none; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+    .bookmarklet:active { cursor: grabbing; }
+    .drag-row { margin: 20px 0; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .hint { color: #666; font-size: 14px; }
+    kbd { font: 13px ui-monospace, monospace; border: 1px solid #ccc; border-bottom-width: 2px; border-radius: 4px;
+          padding: 1px 5px; background: #f6f6f6; }
+    textarea { width: 100%; height: 90px; font: 12px ui-monospace, monospace; padding: 8px; box-sizing: border-box; }
+    button { font: inherit; padding: 6px 14px; border-radius: 6px; border: 1px solid #bbb; background: #fff; cursor: pointer; }
+    details { margin-top: 12px; }
+    summary { cursor: pointer; font-weight: 600; }
+    .note { background: #f6f6f6; border-radius: 8px; padding: 12px 16px; font-size: 14px; color: #444; }
+  </style>
+</head>
+<body>
+  <h1>Michaels order export</h1>
+  <p class="sub">Download your Michaels Canada order history as a spreadsheet (CSV). Unofficial tool, not made by Michaels.</p>
+
+  <h2>1. Install (one time, on a computer)</h2>
+  <ol>
+    <li>Show your bookmarks bar: press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd>
+      (on a Mac, <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd>).</li>
+    <li>Drag this button up onto your bookmarks bar:
+      <div class="drag-row">
+        <a class="bookmarklet" id="bookmarklet" href="#">Export Michaels orders</a>
+        <span class="hint">Drag it, don't click it.</span>
+      </div>
+    </li>
+  </ol>
+
+  <details>
+    <summary>Dragging doesn't work?</summary>
+    <ol>
+      <li>Copy the code below.</li>
+      <li>Right-click your bookmarks bar and choose <b>Add page…</b> (or <b>Add bookmark</b>).</li>
+      <li>Name it <b>Export Michaels orders</b>, and paste the code into the <b>URL</b> box.</li>
+    </ol>
+    <textarea id="code" readonly></textarea>
+    <p><button id="copy">Copy code</button> <span id="copied" class="hint"></span></p>
+  </details>
+
+  <h2>2. Use it</h2>
+  <ol>
+    <li>Log in at <a href="https://canada.michaels.com/buyertools/order-history">canada.michaels.com</a>
+      and open your <b>order history</b>.</li>
+    <li>Click <b>Export Michaels orders</b> on your bookmarks bar. A small panel appears in the top-right corner.</li>
+    <li>Choose <b>All orders</b> or <b>Date range</b>, then click <b>Download CSV</b>.</li>
+    <li>Wait for the progress bar to finish. All orders takes about 2 minutes.
+      The file goes to your Downloads folder, and opens in Excel, Google Sheets or LibreOffice.</li>
+  </ol>
+
+  <p class="note">The tool runs only in your own browser, using your existing Michaels login.
+    Your password and order details are never sent anywhere else.</p>
+
+  <script>
+    // Build the bookmarklet from this page's own address, so it loads the script sitting next to this page.
+    const scriptUrl = new URL('michaels-export.js', location.href).href;
+    const code = "javascript:(()=>{const s=document.createElement('script');" +
+      "s.src='" + scriptUrl + "?t='+Date.now();document.body.appendChild(s);})();";
+    const link = document.getElementById('bookmarklet');
+    link.href = code;
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      alert('Drag this button onto your bookmarks bar instead of clicking it.');
+    });
+    document.getElementById('code').value = code;
+    document.getElementById('copy').addEventListener('click', async () => {
+      await navigator.clipboard.writeText(code);
+      document.getElementById('copied').textContent = 'Copied!';
+    });
+  </script>
+</body>
+</html>
